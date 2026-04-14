@@ -592,11 +592,36 @@
     // ─────────────────────────────────────────
     // MARK SESSION DONE
     // ─────────────────────────────────────────
-    async function markDone(packageId, clientName, currentRem) {
-      if (confirmed.has(packageId)) return;
+let pendingConfirm = null;
 
-      const btn = document.getElementById(`btn-${packageId}`);
-      btn.classList.add('loading');
+async function markDone(packageId, clientName, currentRem) {
+  if (confirmed.has(packageId)) return;
+
+  // First tap — ask for confirmation
+  if (pendingConfirm !== packageId) {
+    pendingConfirm = packageId;
+    const btn = document.getElementById(`btn-${packageId}`);
+    btn.style.background = '#f59e0b';
+    btn.style.borderColor = '#f59e0b';
+    btn.querySelector('svg').style.stroke = '#0d0d0d';
+    showToast(`Tap again to confirm ${clientName.split(' ')[0]}'s session`);
+
+    // Auto-cancel after 4 seconds if not confirmed
+    setTimeout(() => {
+      if (pendingConfirm === packageId) {
+        pendingConfirm = null;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.querySelector('svg').style.stroke = '';
+      }
+    }, 4000);
+    return;
+  }
+
+  // Second tap — confirmed, proceed
+  pendingConfirm = null;
+  const btn = document.getElementById(`btn-${packageId}`);
+  btn.classList.add('loading');
 
       try {
         if (!IS_DEMO) {
