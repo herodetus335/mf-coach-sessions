@@ -200,6 +200,7 @@
           const res = await fetch(WEBHOOK_GET, { method:'GET' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
+sessions = data.sessions || data;
           clients = data.map((c,i) => ({
   packageId: c.id || c.packageId,
   clientId: c.clientId || (c.client && c.client[0]),
