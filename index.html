@@ -12,403 +12,118 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
-
   <style>
-    /* ── CONFIG ── swap these two URLs once your n8n webhooks are built */
-    :root {
-      --webhook-get:  https://n8n.botlyticsgroup.com/webhook/f4145ed2-40df-4a65-b2a3-67f668be0e1a;
-      --webhook-post: https://n8n.botlyticsgroup.com/webhook/7be751bc-f1c6-441f-8e98-b7a423b391fb;
-    }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:        #0d0d0d;
-      --surface:   #181818;
-      --surface2:  #222222;
-      --border:    #2e2e2e;
-      --text:      #f0ece4;
-      --muted:     #666;
-      --accent:    #4ade80;
-      --amber:     #f59e0b;
-      --red:       #ef4444;
-      --font-body: 'Barlow', sans-serif;
-      --font-disp: 'Barlow Condensed', sans-serif;
-      --safe-top:  env(safe-area-inset-top, 0px);
-      --safe-bot:  env(safe-area-inset-bottom, 0px);
+      --bg: #0d0d0d; --surface: #181818; --surface2: #222222; --border: #2e2e2e;
+      --text: #f0ece4; --muted: #666; --accent: #4ade80; --amber: #f59e0b; --red: #ef4444;
+      --font-body: 'Barlow', sans-serif; --font-disp: 'Barlow Condensed', sans-serif;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bot: env(safe-area-inset-bottom, 0px);
     }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+    body { display: flex; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      overscroll-behavior: none;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-    }
-
-    /* ── HEADER ── */
-    .header {
-      background: var(--bg);
-      padding: calc(var(--safe-top) + 14px) 20px 14px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      font-family: var(--font-disp);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--text);
-    }
-
-    .brand span {
-      color: var(--accent);
-    }
-
-    .refresh-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    /* HEADER */
+    .header { background: var(--bg); padding: calc(var(--safe-top) + 14px) 20px 14px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-family: var(--font-disp); font-size: 22px; font-weight: 700; letter-spacing: 0.02em; }
+    .brand span { color: var(--accent); }
+    .refresh-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .refresh-btn:active { opacity: 0.6; }
     .refresh-btn svg { width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 2; }
     .refresh-btn.spinning svg { animation: spin 0.7s linear infinite; }
+    .date-line { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .date-line {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    /* ── STATS BAR ── */
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stat {
-      background: var(--surface);
-      padding: 14px 16px;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-family: var(--font-disp);
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-    }
-
+    /* STATS */
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+    .stat { background: var(--surface); padding: 14px 16px; text-align: center; }
+    .stat-num { font-family: var(--font-disp); font-size: 28px; font-weight: 700; line-height: 1; }
     .stat-num.accent { color: var(--accent); }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 
-    .stat-label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 4px;
-    }
+    /* LIST */
+    .list { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .section-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 0 2px; }
 
-    /* ── CLIENT LIST ── */
-    .list {
-      flex: 1;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+    /* CARD */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 14px 16px; display: flex; align-items: center; gap: 13px; transition: border-color 0.2s, background 0.2s; position: relative; overflow: hidden; }
+    .card.done { border-color: var(--accent); background: #0d1f14; }
+    .card.done::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 60%, rgba(74,222,128,0.06)); pointer-events: none; }
+    .card-left { display: flex; align-items: center; gap: 13px; flex: 1; min-width: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .card-left:active { opacity: 0.75; }
 
-    .section-title {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 4px 0 2px;
-    }
-
-    /* ── CLIENT CARD ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 14px 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      transition: border-color 0.2s, background 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card.done {
-      border-color: var(--accent);
-      background: #0d1f14;
-    }
-
-    .card.done::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 60%, rgba(74,222,128,0.06));
-      pointer-events: none;
-    }
-
-    /* avatar */
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-disp);
-      font-size: 15px;
-      font-weight: 700;
-      flex-shrink: 0;
-      letter-spacing: 0.02em;
-    }
-
+    .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-disp); font-size: 15px; font-weight: 700; flex-shrink: 0; }
     .av-0 { background: #1e1530; color: #a78bfa; }
     .av-1 { background: #0d1f14; color: #4ade80; }
     .av-2 { background: #1f1208; color: #f59e0b; }
     .av-3 { background: #0d1520; color: #60a5fa; }
     .av-4 { background: #1f0d14; color: #f472b6; }
 
-    /* info */
     .info { flex: 1; min-width: 0; }
+    .client-name { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .client-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .tap-hint { font-size: 11px; color: #444; margin-top: 1px; }
 
-    .client-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .pill { font-family: var(--font-disp); font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; }
+    .pill-green { background: #0d1f14; color: var(--accent); border: 1px solid #1e4d2e; }
+    .pill-amber { background: #1f1208; color: var(--amber); border: 1px solid #4d2e08; }
+    .pill-red   { background: #1f0d0d; color: var(--red);   border: 1px solid #4d1a1a; }
+    .pill-done  { background: #0d1f14; color: var(--accent); border: 1px solid var(--accent); }
 
-    .client-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    /* session pill */
-    .pill {
-      font-family: var(--font-disp);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
-      flex-shrink: 0;
-      letter-spacing: 0.02em;
-    }
-
-    .pill-green  { background: #0d1f14; color: var(--accent); border: 1px solid #1e4d2e; }
-    .pill-amber  { background: #1f1208; color: var(--amber);  border: 1px solid #4d2e08; }
-    .pill-red    { background: #1f0d0d; color: var(--red);    border: 1px solid #4d1a1a; }
-    .pill-done   { background: #0d1f14; color: var(--accent); border: 1px solid var(--accent); }
-
-    /* check button */
-    .check-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: var(--surface2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    .check-btn:active:not(.confirmed) {
-      transform: scale(0.92);
-    }
-
-    .check-btn.confirmed {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .check-btn.loading {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .check-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--muted);
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: stroke 0.15s;
-    }
-
+    .check-btn { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .check-btn:active:not(.confirmed) { transform: scale(0.92); }
+    .check-btn.confirmed { background: var(--accent); border-color: var(--accent); }
+    .check-btn.loading { opacity: 0.5; pointer-events: none; }
+    .check-btn svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.15s; }
     .check-btn.confirmed svg { stroke: #0d0d0d; }
 
-    /* ── LOADING STATE ── */
-    #loading {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-    }
-
-    .loader {
-      width: 36px;
-      height: 36px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .loading-text {
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-    }
-
-    /* ── ERROR STATE ── */
-    #error {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 40px 24px;
-      display: none;
-    }
-
-    .error-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #1f0d0d;
-      border: 1px solid #4d1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    /* LOADING / ERROR */
+    #loading { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+    .loader { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .loading-text { font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
+    #error { flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 24px; }
+    .error-icon { width: 48px; height: 48px; border-radius: 50%; background: #1f0d0d; border: 1px solid #4d1a1a; display: flex; align-items: center; justify-content: center; }
     .error-icon svg { width: 22px; height: 22px; stroke: var(--red); fill: none; stroke-width: 2; }
-    .error-title { font-size: 16px; font-weight: 600; color: var(--text); }
+    .error-title { font-size: 16px; font-weight: 600; }
     .error-msg { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.5; }
+    .retry-btn { margin-top: 8px; padding: 10px 24px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
 
-    .retry-btn {
-      margin-top: 8px;
-      padding: 10px 24px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .demo-banner { background: #1a1400; border-bottom: 1px solid #4d3a00; padding: 8px 16px; font-size: 11px; color: #f59e0b; text-align: center; }
+    .bottom-spacer { height: calc(var(--safe-bot) + 8px); }
+    .empty { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
-    /* ── DEMO BANNER ── */
-    .demo-banner {
-      background: #1a1400;
-      border-bottom: 1px solid #4d3a00;
-      padding: 8px 16px;
-      font-size: 11px;
-      color: #f59e0b;
-      text-align: center;
-      letter-spacing: 0.03em;
-    }
+    /* TOAST */
+    .toast { position: fixed; bottom: calc(var(--safe-bot) + 20px); left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #0d0d0d; font-weight: 600; font-size: 13px; padding: 10px 20px; border-radius: 100px; white-space: nowrap; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 200; pointer-events: none; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.warning { background: var(--amber); }
 
-    /* ── BOTTOM SAFE AREA ── */
-    .bottom-spacer {
-      height: calc(var(--safe-bot) + 8px);
-    }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      bottom: calc(var(--safe-bot) + 20px);
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--accent);
-      color: #0d0d0d;
-      font-weight: 600;
-      font-size: 13px;
-      padding: 10px 20px;
-      border-radius: 100px;
-      white-space: nowrap;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-      z-index: 100;
-      pointer-events: none;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.warning {
-      background: var(--amber);
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
+    /* DRAWER */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .drawer-overlay.open { opacity: 1; pointer-events: all; }
+    .drawer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-radius: 20px 20px 0 0; border-top: 1px solid var(--border); z-index: 60; transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.32,0.72,0,1); max-height: 75vh; display: flex; flex-direction: column; padding-bottom: calc(var(--safe-bot) + 16px); }
+    .drawer.open { transform: translateY(0); }
+    .drawer-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 12px auto 0; flex-shrink: 0; }
+    .drawer-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .drawer-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-disp); font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .drawer-name { font-size: 17px; font-weight: 600; }
+    .drawer-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .drawer-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 20px; }
+    .sessions-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 14px 0 8px; }
+    .session-row { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .session-row:last-child { border-bottom: none; }
+    .session-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .session-info { flex: 1; }
+    .session-num { font-size: 14px; font-weight: 500; }
+    .session-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .session-badge { font-family: var(--font-disp); font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: #0d1f14; color: var(--accent); border: 1px solid #1e4d2e; }
+    .no-sessions { text-align: center; padding: 36px 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .drawer-loading { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 40px 0; }
+    .drawer-loading .loader { width: 22px; height: 22px; }
+    .drawer-loading span { font-size: 13px; color: var(--muted); }
   </style>
 </head>
 <body>
-
-  <!-- ── HEADER ── -->
   <div class="header">
     <div class="header-top">
       <div class="brand">THE <span>MF</span> COACH</div>
@@ -418,302 +133,223 @@
     </div>
     <div class="date-line" id="dateDisplay"></div>
   </div>
-
-  <!-- ── DEMO BANNER (hidden when real webhooks configured) ── -->
-  <div class="demo-banner" id="demoBanner">
-    DEMO MODE — swap webhook URLs in index.html to go live
-  </div>
-
-  <!-- ── STATS ── -->
+  <div class="demo-banner" id="demoBanner">DEMO MODE — swap webhook URLs in index.html to go live</div>
   <div class="stats">
-    <div class="stat">
-      <div class="stat-num accent" id="statToday">0</div>
-      <div class="stat-label">Today</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="statClients">—</div>
-      <div class="stat-label">Clients</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="statSessions">—</div>
-      <div class="stat-label">Remaining</div>
-    </div>
+    <div class="stat"><div class="stat-num accent" id="statToday">0</div><div class="stat-label">Today</div></div>
+    <div class="stat"><div class="stat-num" id="statClients">—</div><div class="stat-label">Clients</div></div>
+    <div class="stat"><div class="stat-num" id="statSessions">—</div><div class="stat-label">Remaining</div></div>
   </div>
-
-  <!-- ── LOADING ── -->
-  <div id="loading">
-    <div class="loader"></div>
-    <div class="loading-text">Loading clients...</div>
-  </div>
-
-  <!-- ── ERROR ── -->
+  <div id="loading"><div class="loader"></div><div class="loading-text">Loading clients...</div></div>
   <div id="error">
-    <div class="error-icon">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    </div>
+    <div class="error-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
     <div class="error-title">Could not load clients</div>
-    <div class="error-msg" id="errorMsg">Check your n8n webhook URL and make sure the workflow is active.</div>
+    <div class="error-msg" id="errorMsg">Check your n8n webhook URL.</div>
     <button class="retry-btn" onclick="loadClients()">Try again</button>
   </div>
-
-  <!-- ── CLIENT LIST ── -->
   <div class="list" id="clientList" style="display:none"></div>
-
-  <!-- ── BOTTOM SPACER ── -->
   <div class="bottom-spacer"></div>
-
-  <!-- ── TOAST ── -->
   <div class="toast" id="toast"></div>
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-handle"></div>
+    <div class="drawer-header" id="drawerHeader"></div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </div>
 
   <script>
-    // ─────────────────────────────────────────
-    // CONFIG — replace these with your n8n URLs
-    // ─────────────────────────────────────────
-    const WEBHOOK_GET  = 'https://n8n.botlyticsgroup.com/webhook/f4145ed2-40df-4a65-b2a3-67f668be0e1a';
-    const WEBHOOK_POST = 'https://n8n.botlyticsgroup.com/webhook/7be751bc-f1c6-441f-8e98-b7a423b391fb';
+    const WEBHOOK_GET      = 'https://n8n.botlyticsgroup.com/webhook-test/f4145ed2-40df-4a65-b2a3-67f668be0e1a';
+    const WEBHOOK_POST     = 'https://n8n.botlyticsgroup.com/webhook-test/7be751bc-f1c6-441f-8e98-b7a423b391fb';
+    const WEBHOOK_SESSIONS = 'https://n8n.botlyticsgroup.com/webhook/14ad5275-b248-49c9-8a7c-b40c2ee1ae3a';
     const IS_DEMO = WEBHOOK_GET.includes('YOUR_N8N');
 
-    // Demo data (mirrors your actual Airtable clients)
     const DEMO_CLIENTS = [
-      { id: 'demo1', packageId: 'pkg1', name: 'Olga Frey',   sessionsRemaining: 8, avatarClass: 'av-0' },
-      { id: 'demo2', packageId: 'pkg2', name: 'Lana Yugova', sessionsRemaining: 7, avatarClass: 'av-1' },
-      { id: 'demo3', packageId: 'pkg3', name: 'Vadim Frey',  sessionsRemaining: 2, avatarClass: 'av-2' },
-      { id: 'demo4', packageId: 'pkg4', name: 'Frank Smith', sessionsRemaining: 9, avatarClass: 'av-3' },
+      { packageId:'pkg1', clientId:'cli1', name:'Anna P',           sessionsRemaining:3,  avatarClass:'av-0' },
+      { packageId:'pkg2', clientId:'cli2', name:'Lavisha K',        sessionsRemaining:17, avatarClass:'av-1' },
+      { packageId:'pkg3', clientId:'cli3', name:'Lailah P',         sessionsRemaining:4,  avatarClass:'av-2' },
+      { packageId:'pkg4', clientId:'cli4', name:'Hassan & Kuralay', sessionsRemaining:2,  avatarClass:'av-3' },
+      { packageId:'pkg5', clientId:'cli5', name:'Victor & Roma',    sessionsRemaining:1,  avatarClass:'av-4' },
     ];
+    const DEMO_SESSIONS = {
+      cli1: [{sessionNumber:3,date:'2026-04-20'},{sessionNumber:2,date:'2026-04-17'},{sessionNumber:1,date:'2026-04-14'}],
+      cli2: [{sessionNumber:3,date:'2026-04-19'},{sessionNumber:2,date:'2026-04-16'},{sessionNumber:1,date:'2026-04-12'}],
+      cli3: [{sessionNumber:6,date:'2026-04-18'},{sessionNumber:5,date:'2026-04-15'},{sessionNumber:4,date:'2026-04-11'}],
+      cli4: [{sessionNumber:8,date:'2026-04-20'},{sessionNumber:7,date:'2026-04-17'}],
+      cli5: [{sessionNumber:9,date:'2026-04-19'}],
+    };
 
-    // ─────────────────────────────────────────
-    // STATE
-    // ─────────────────────────────────────────
-    let clients = [];
-    let todayCount = 0;
+    let clients = [], todayCount = 0;
     const confirmed = new Set();
 
-    // ─────────────────────────────────────────
-    // INIT
-    // ─────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-      setDate();
-      if (!IS_DEMO) document.getElementById('demoBanner').style.display = 'none';
-      loadClients();
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      }
-    });
-
-    function setDate() {
       const d = new Date();
       const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      document.getElementById('dateDisplay').textContent =
-        `${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
-    }
+      document.getElementById('dateDisplay').textContent = `${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+      if (!IS_DEMO) document.getElementById('demoBanner').style.display = 'none';
+      loadClients();
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
 
-    // ─────────────────────────────────────────
-    // LOAD CLIENTS
-    // ─────────────────────────────────────────
     async function loadClients() {
       showLoading();
       const btn = document.getElementById('refreshBtn');
       btn.classList.add('spinning');
-
       try {
-        if (IS_DEMO) {
-          await new Promise(r => setTimeout(r, 600));
-          clients = DEMO_CLIENTS.map(c => ({...c}));
-        } else {
-          const res = await fetch(WEBHOOK_GET, { method: 'GET' });
+        if (IS_DEMO) { await new Promise(r=>setTimeout(r,600)); clients = DEMO_CLIENTS.map(c=>({...c})); }
+        else {
+          const res = await fetch(WEBHOOK_GET, { method:'GET' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
-          // Expects array: [{id, packageId, name, sessionsRemaining}, ...]
-          clients = data.map((c, i) => ({
-            ...c,
-            avatarClass: `av-${i % 5}`
-          }));
+          clients = data.map((c,i) => ({ ...c, avatarClass:`av-${i%5}` }));
         }
         renderClients();
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        btn.classList.remove('spinning');
-      }
+      } catch(err) { showError(err.message); }
+      finally { btn.classList.remove('spinning'); }
     }
 
-    // ─────────────────────────────────────────
-    // RENDER
-    // ─────────────────────────────────────────
     function renderClients() {
       const list = document.getElementById('clientList');
-
-      if (clients.length === 0) {
-        list.innerHTML = '<div class="empty">No active clients found.<br>Check your Airtable Package Tracker.</div>';
-        updateStats();
-        showList();
-        return;
-      }
-
+      if (!clients.length) { list.innerHTML='<div class="empty">No active clients found.</div>'; updateStats(); showList(); return; }
       list.innerHTML = '<div class="section-title">Active Clients</div>';
-
       clients.forEach(client => {
-        const initials = client.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+        const initials = client.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
         const rem = client.sessionsRemaining;
         const isDone = confirmed.has(client.packageId);
-
-        let pillClass = 'pill-green';
+        let pillClass = rem===0 ? 'pill-red' : rem<=3 ? 'pill-amber' : 'pill-green';
         let pillText = `${rem} left`;
-        if (isDone) { pillClass = 'pill-done'; pillText = 'Done ✓'; }
-        else if (rem === 0) { pillClass = 'pill-red'; pillText = 'Expired'; }
-        else if (rem <= 3) { pillClass = 'pill-amber'; pillText = `${rem} left`; }
-
+        if (isDone) { pillClass='pill-done'; pillText='Done ✓'; }
         const card = document.createElement('div');
-        card.className = `card${isDone ? ' done' : ''}`;
+        card.className = `card${isDone?' done':''}`;
         card.id = `card-${client.packageId}`;
-
         card.innerHTML = `
-          <div class="avatar ${client.avatarClass}">${initials}</div>
-          <div class="info">
-            <div class="client-name">${client.name}</div>
-            <div class="client-sub" id="sub-${client.packageId}">${rem} session${rem !== 1 ? 's' : ''} remaining</div>
+          <div class="card-left" onclick="openDrawer('${client.clientId}','${client.name}','${client.avatarClass}',${rem})">
+            <div class="avatar ${client.avatarClass}">${initials}</div>
+            <div class="info">
+              <div class="client-name">${client.name}</div>
+              <div class="client-sub" id="sub-${client.packageId}">${rem} session${rem!==1?'s':''} remaining</div>
+              <div class="tap-hint">Tap to view history</div>
+            </div>
           </div>
           <span class="pill ${pillClass}" id="pill-${client.packageId}">${pillText}</span>
-          <button class="check-btn${isDone ? ' confirmed' : ''}" id="btn-${client.packageId}"
-            onclick="markDone('${client.packageId}', '${client.name}', ${rem})"
-            aria-label="Mark session done for ${client.name}">
+          <button class="check-btn${isDone?' confirmed':''}" id="btn-${client.packageId}"
+            onclick="markDone('${client.packageId}','${client.name}',${rem})"
+            aria-label="Mark session done">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          </button>
-        `;
-
+          </button>`;
         list.appendChild(card);
       });
-
-      updateStats();
-      showList();
+      updateStats(); showList();
     }
 
-    // ─────────────────────────────────────────
-    // MARK SESSION DONE
-    // ─────────────────────────────────────────
-let pendingConfirm = null;
-
-async function markDone(packageId, clientName, currentRem) {
-  if (confirmed.has(packageId)) return;
-
-  // First tap — ask for confirmation
-  if (pendingConfirm !== packageId) {
-    pendingConfirm = packageId;
-    const btn = document.getElementById(`btn-${packageId}`);
-    btn.style.background = '#f59e0b';
-    btn.style.borderColor = '#f59e0b';
-    btn.querySelector('svg').style.stroke = '#0d0d0d';
-    showToast(`Tap again to confirm ${clientName.split(' ')[0]}'s session`);
-
-    // Auto-cancel after 4 seconds if not confirmed
-    setTimeout(() => {
-      if (pendingConfirm === packageId) {
-        pendingConfirm = null;
-        btn.style.background = '';
-        btn.style.borderColor = '';
-        btn.querySelector('svg').style.stroke = '';
+    // DRAWER
+    async function openDrawer(clientId, name, avatarClass, rem) {
+      const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('drawerHeader').innerHTML = `
+        <div class="drawer-avatar ${avatarClass}">${initials}</div>
+        <div>
+          <div class="drawer-name">${name}</div>
+          <div class="drawer-sub">${rem} session${rem!==1?'s':''} remaining</div>
+        </div>`;
+      document.getElementById('drawerBody').innerHTML = `
+        <div class="sessions-label">Recent Sessions</div>
+        <div class="drawer-loading"><div class="loader"></div><span>Loading...</span></div>`;
+      document.getElementById('drawerOverlay').classList.add('open');
+      document.getElementById('drawer').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      try {
+        let sessions;
+        if (IS_DEMO) { await new Promise(r=>setTimeout(r,450)); sessions = DEMO_SESSIONS[clientId] || []; }
+        else {
+          const res = await fetch(`${WEBHOOK_SESSIONS}?clientId=${encodeURIComponent(clientId)}`, { method:'GET' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          sessions = await res.json();
+        }
+        renderSessions(sessions);
+      } catch(err) {
+        document.getElementById('drawerBody').innerHTML = `
+          <div class="sessions-label">Recent Sessions</div>
+          <div class="no-sessions">Could not load sessions.<br>Check your n8n webhook.</div>`;
       }
-    }, 4000);
-    return;
-  }
+    }
 
-  // Second tap — confirmed, proceed
-  pendingConfirm = null;
-  const btn = document.getElementById(`btn-${packageId}`);
-  btn.classList.add('loading');
+    function renderSessions(sessions) {
+      const body = document.getElementById('drawerBody');
+      if (!sessions || !sessions.length) {
+        body.innerHTML = `<div class="sessions-label">Recent Sessions</div><div class="no-sessions">No sessions logged yet.<br>Tap ✓ after your first session.</div>`;
+        return;
+      }
+      const rows = sessions.map(s => {
+        const formatted = new Date(s.date).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        return `<div class="session-row">
+          <div class="session-dot"></div>
+          <div class="session-info">
+            <div class="session-num">Session ${s.sessionNumber}</div>
+            <div class="session-date">${formatted}</div>
+          </div>
+          <div class="session-badge">#${s.sessionNumber}</div>
+        </div>`;
+      }).join('');
+      body.innerHTML = `<div class="sessions-label">Recent Sessions</div>${rows}`;
+    }
 
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.remove('open');
+      document.getElementById('drawer').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    let touchStartY = 0;
+    document.getElementById('drawer').addEventListener('touchstart', e=>{ touchStartY = e.touches[0].clientY; }, { passive:true });
+    document.getElementById('drawer').addEventListener('touchend', e=>{ if (e.changedTouches[0].clientY - touchStartY > 60) closeDrawer(); }, { passive:true });
+
+    // MARK DONE
+    let pendingConfirm = null;
+    async function markDone(packageId, clientName, currentRem) {
+      if (confirmed.has(packageId)) return;
+      if (pendingConfirm !== packageId) {
+        pendingConfirm = packageId;
+        const btn = document.getElementById(`btn-${packageId}`);
+        btn.style.background='#f59e0b'; btn.style.borderColor='#f59e0b';
+        btn.querySelector('svg').style.stroke='#0d0d0d';
+        showToast(`Tap again to confirm ${clientName.split(' ')[0]}'s session`);
+        setTimeout(()=>{ if(pendingConfirm===packageId){ pendingConfirm=null; btn.style.background=''; btn.style.borderColor=''; btn.querySelector('svg').style.stroke=''; } }, 4000);
+        return;
+      }
+      pendingConfirm = null;
+      const btn = document.getElementById(`btn-${packageId}`);
+      btn.classList.add('loading');
       try {
         if (!IS_DEMO) {
-          const res = await fetch(WEBHOOK_POST, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ packageId, clientName })
-          });
+          const res = await fetch(WEBHOOK_POST, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({packageId,clientName}) });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        } else {
-          await new Promise(r => setTimeout(r, 400));
-        }
-
-        // Success — update UI
-        confirmed.add(packageId);
-        todayCount++;
-
+        } else { await new Promise(r=>setTimeout(r,400)); }
+        confirmed.add(packageId); todayCount++;
         const newRem = currentRem - 1;
-
-        // Update client in memory
-        const c = clients.find(cl => cl.packageId === packageId);
+        const c = clients.find(cl=>cl.packageId===packageId);
         if (c) c.sessionsRemaining = newRem;
-
-        // Update card
-        const card = document.getElementById(`card-${packageId}`);
-        card.classList.add('done');
-
-        btn.classList.remove('loading');
-        btn.classList.add('confirmed');
-
-        document.getElementById(`sub-${packageId}`).textContent =
-          `${newRem} session${newRem !== 1 ? 's' : ''} remaining`;
-
+        document.getElementById(`card-${packageId}`).classList.add('done');
+        btn.classList.remove('loading'); btn.classList.add('confirmed');
+        document.getElementById(`sub-${packageId}`).textContent = `${newRem} session${newRem!==1?'s':''} remaining`;
         const pill = document.getElementById(`pill-${packageId}`);
-        pill.className = 'pill pill-done';
-        pill.textContent = 'Done ✓';
-
+        pill.className='pill pill-done'; pill.textContent='Done ✓';
         document.getElementById('statToday').textContent = todayCount;
         updateStats();
-
-        if (newRem === 0) {
-          showToast(`${clientName.split(' ')[0]} is at 0 — Zelle reminder will fire`, 'warning');
-        } else {
-          showToast(`${clientName.split(' ')[0]} — session logged`);
-        }
-
-      } catch (err) {
-        btn.classList.remove('loading');
-        showToast('Failed to sync — try again', 'warning');
-      }
+        if (newRem===0) showToast(`${clientName.split(' ')[0]} is at 0 — reminder will fire`,'warning');
+        else showToast(`${clientName.split(' ')[0]} — session logged`);
+      } catch(err) { btn.classList.remove('loading'); showToast('Failed to sync — try again','warning'); }
     }
 
-    // ─────────────────────────────────────────
-    // STATS
-    // ─────────────────────────────────────────
     function updateStats() {
-      const activeClients = clients.filter(c => !confirmed.has(c.packageId) && c.sessionsRemaining > 0);
-      const totalRem = clients.reduce((sum, c) => sum + c.sessionsRemaining, 0);
       document.getElementById('statClients').textContent = clients.length;
-      document.getElementById('statSessions').textContent = totalRem;
+      document.getElementById('statSessions').textContent = clients.reduce((s,c)=>s+c.sessionsRemaining,0);
     }
-
-    // ─────────────────────────────────────────
-    // UI HELPERS
-    // ─────────────────────────────────────────
-    function showLoading() {
-      document.getElementById('loading').style.display = 'flex';
-      document.getElementById('error').style.display = 'none';
-      document.getElementById('clientList').style.display = 'none';
-    }
-
-    function showList() {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = 'none';
-      document.getElementById('clientList').style.display = 'flex';
-    }
-
-    function showError(msg) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = 'flex';
-      document.getElementById('clientList').style.display = 'none';
-      document.getElementById('errorMsg').textContent =
-        msg || 'Check your n8n webhook URL and make sure the workflow is active.';
-    }
-
+    function showLoading() { document.getElementById('loading').style.display='flex'; document.getElementById('error').style.display='none'; document.getElementById('clientList').style.display='none'; }
+    function showList() { document.getElementById('loading').style.display='none'; document.getElementById('error').style.display='none'; document.getElementById('clientList').style.display='flex'; }
+    function showError(msg) { document.getElementById('loading').style.display='none'; document.getElementById('error').style.display='flex'; document.getElementById('clientList').style.display='none'; document.getElementById('errorMsg').textContent=msg||'Check your n8n webhook URL.'; }
     let toastTimer;
-    function showToast(msg, type = '') {
+    function showToast(msg, type='') {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `toast${type === 'warning' ? ' warning' : ''} show`;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2500);
+      t.textContent=msg; t.className=`toast${type==='warning'?' warning':''} show`;
+      clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
     }
   </script>
 </body>
