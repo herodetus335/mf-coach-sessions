@@ -291,7 +291,8 @@ if (data.packageNumber) {
         return;
       }
       const rows = sessions.map(s => {
-        const formatted = new Date(s.date).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        const [year, month, day] = s.date.split('-');
+const formatted = new Date(year, month - 1, day).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
         return `<div class="session-row">
           <div class="session-dot"></div>
           <div class="session-info">
