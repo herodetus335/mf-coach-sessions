@@ -200,7 +200,6 @@
           const res = await fetch(WEBHOOK_GET, { method:'GET' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
-sessions = data.sessions || data;
           clients = data.map((c,i) => ({
   packageId: c.id || c.packageId,
   clientId: c.clientId || (c.client && c.client[0]),
@@ -268,8 +267,13 @@ sessions = data.sessions || data;
         if (IS_DEMO) { await new Promise(r=>setTimeout(r,450)); sessions = DEMO_SESSIONS[clientId] || []; }
         else {
           const res = await fetch(`${WEBHOOK_SESSIONS}?clientId=${encodeURIComponent(clientId)}`, { method:'GET' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          sessions = await res.json();
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const data = await res.json();
+sessions = data.sessions || data;
+if (data.packageNumber) {
+  document.querySelector('#drawerHeader .drawer-sub').textContent =
+    `Package #${data.packageNumber} · ${rem} session${rem!==1?'s':''} remaining`;
+}
         }
         renderSessions(sessions);
       } catch(err) {
