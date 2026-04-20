@@ -200,7 +200,13 @@
           const res = await fetch(WEBHOOK_GET, { method:'GET' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
-          clients = data.map((c,i) => ({ ...c, avatarClass:`av-${i%5}` }));
+          clients = data.map((c,i) => ({
+  packageId: c.id || c.packageId,
+  clientId: c.clientId || (c.client && c.client[0]),
+  name: c.name?.[0] || c.name,
+  sessionsRemaining: c['Sessions Remaining'] ?? c.sessionsRemaining,
+  avatarClass: `av-${i%5}`
+}));
         }
         renderClients();
       } catch(err) { showError(err.message); }
