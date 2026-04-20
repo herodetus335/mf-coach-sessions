@@ -204,7 +204,7 @@ const data = json.data || json;
 clients = data.map((c,i) => ({
   packageId: c.id || c.packageId,
   clientId: c.clientId || (c.client && c.client[0]),
-  name: c.name?.[0] || c.name,
+name: c.name,
   sessionsRemaining: c['Sessions Remaining'] ?? c.sessionsRemaining,
   avatarClass: `av-${i%5}`
 }));
