@@ -230,7 +230,7 @@ clients = data.map((c,i) => ({
         card.className = `card${isDone?' done':''}`;
         card.id = `card-${client.packageId}`;
         card.innerHTML = `
-          <div class="card-left" onclick="openDrawer('${client.clientId}','${client.name}','${client.avatarClass}',${rem})">
+          <div class="card-left" onclick="openDrawer('${client.clientId}','${client.name}','${client.avatarClass}',${rem},'${client.notesLink||''}')">
             <div class="avatar ${client.avatarClass}">${initials}</div>
             <div class="info">
               <div class="client-name">${client.name}</div>
@@ -250,14 +250,15 @@ clients = data.map((c,i) => ({
     }
 
     // DRAWER
-    async function openDrawer(clientId, name, avatarClass, rem) {
+    async function openDrawer(clientId, name, avatarClass, rem, notesLink = '') {
       const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
       document.getElementById('drawerHeader').innerHTML = `
         <div class="drawer-avatar ${avatarClass}">${initials}</div>
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="drawer-name">${name}</div>
           <div class="drawer-sub">${rem} session${rem!==1?'s':''} remaining</div>
-        </div>`;
+        </div>
+        ${notesLink ? `<a href="${notesLink}" target="_blank" style="flex-shrink:0;background:#1e1530;border:1px solid #3d2a6e;color:#a78bfa;font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;text-decoration:none;font-family:var(--font-disp);letter-spacing:0.02em;white-space:nowrap;">📓 Notes</a>` : ''}`;
       document.getElementById('drawerBody').innerHTML = `
         <div class="sessions-label">Recent Sessions</div>
         <div class="drawer-loading"><div class="loader"></div><span>Loading...</span></div>`;
