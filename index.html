@@ -202,10 +202,10 @@
 const json = await res.json();
 const data = json.data || json;
 clients = data.map((c,i) => ({
-  packageId: c.currentPackageId,
+  packageId: c.packageId,
   clientId: c.clientId,
   name: c.name,
-  sessionsRemaining: c.currentSessionsRemaining,
+  sessionsRemaining: c.sessionsRemaining,
   notesLink: c.notesLink ?? null,
   avatarClass: `av-${i%5}`
 }));
